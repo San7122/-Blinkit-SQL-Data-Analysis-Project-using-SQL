@@ -79,11 +79,7 @@ The full query that creates and joins all CTEs to generate the final insights is
 
 ---
 
-## ✅ Status
 
-✔️ Project completed  
-📄 Ready for submission  
-🧑‍💻 Open for interview walkthrough
 
 ---
 
