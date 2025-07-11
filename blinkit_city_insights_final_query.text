@@ -1,0 +1,76 @@
+-- Dcluttr Data Analyst Task
+-- Final SQL Query for blinkit_city_insights Table
+-- Submitted by: Sanjana Thakur
+
+-- GitHub link: https://github.com/San7122/-Blinkit-SQL-Data-Analysis-Project-using-SQL
+
+
+
+
+
+
+
+
+CREATE TABLE final_blinkit_city_insights AS
+WITH
+    ds_total AS (
+        SELECT COUNT(DISTINCT store_id) AS ds_count FROM blinkit_city_insights
+    ),
+
+
+    est_qty AS (
+        SELECT
+            sku_id,
+            ROUND(SUM(inventory) * 1.0 / COUNT(DISTINCT store_id), 2) AS est_qty_sold,
+            COUNT(DISTINCT store_id) AS listed_ds_count
+        FROM blinkit_city_insights
+        GROUP BY sku_id
+    ),
+
+
+    mode_sp AS (
+        SELECT sku_id, selling_price AS mode_selling_price
+        FROM (
+            SELECT 
+                sku_id, 
+                selling_price,
+                ROW_NUMBER() OVER (PARTITION BY sku_id ORDER BY COUNT(*) DESC) AS rn
+            FROM blinkit_city_insights
+            GROUP BY sku_id, selling_price
+        ) sub
+        WHERE rn = 1
+    ),
+
+
+    mode_mrp AS (
+        SELECT sku_id, mrp AS mode_mrp
+        FROM (
+            SELECT 
+                sku_id, 
+                mrp,
+                ROW_NUMBER() OVER (PARTITION BY sku_id ORDER BY COUNT(*) DESC) AS rn
+            FROM blinkit_city_insights
+            GROUP BY sku_id, mrp
+        ) sub
+        WHERE rn = 1
+    )
+
+
+SELECT
+    e.sku_id,
+    e.est_qty_sold,
+    e.listed_ds_count,
+    d.ds_count,
+    ROUND(e.listed_ds_count * 1.0 / d.ds_count, 2) AS wt_osa,
+    ROUND(
+        ROUND(e.listed_ds_count * 1.0 / d.ds_count, 2) * e.listed_ds_count, 2
+    ) AS wt_osa_ls,
+    s.mode_selling_price,
+    m.mode_mrp,
+    ROUND(e.est_qty_sold * s.mode_selling_price, 2) AS est_sales_sp,
+    ROUND(e.est_qty_sold * m.mode_mrp, 2) AS est_sales_mrp,
+    ROUND((m.mode_mrp - s.mode_selling_price) / m.mode_mrp, 2) AS discount
+FROM est_qty e
+JOIN ds_total d
+LEFT JOIN mode_sp s ON e.sku_id = s.sku_id
+LEFT JOIN mode_mrp m ON e.sku_id = m.sku_id;
