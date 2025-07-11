@@ -92,7 +92,9 @@ The full query that creates and joins all CTEs to generate the final insights is
 Feel free to connect for feedback, suggestions, or walkthroughs:
 
 **Sanjana Thakur**  
-📧 Email: *your-email@example.com*  
-📌 LinkedIn: [linkedin.com/in/yourprofile](https://linkedin.com/in/yourprofile)
+📧 Emails: sanjanathakur302@gmail.com
+📌 LinkedIn:https://www.linkedin.com/in/sanjana-thakur-sunzoo/
+   utube: https://www.youtube.com/@Datacrack-h9q
+   Medium: https://medium.com/@sanjanathakur302
 
 ---
